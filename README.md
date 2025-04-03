@@ -10,7 +10,7 @@ Special rules for this variant of chess:
 Each player sees a different version of the board, where they can only view their **own pieces** and the **squares their pieces can legally move to**. If an opponent’s piece occupies one of these squares, it will be visible, as it can be captured. Hidden squares are clearly indicated to avoid confusion with visible empty squares. The objective is not to checkmate the king but to **capture** it. Players are not informed if their king is in check, and both staying in check or moving into check are legal moves, though they may result in the king being captured and losing the game.
 [(https://en.wikipedia.org/wiki/Dark_chess)](https://en.wikipedia.org/wiki/Dark_chess)
 
-My ChessVar class must include the following:
+My ChessVar class includes the following:
 * An **init method** that initializes any data members
 * A method called **get_game_state** that just returns 'UNFINISHED', 'WHITE_WON', 'BLACK_WON'. 
 * A method called **get_board** that takes one parameter – a string indicating the perspective from which to display the board and return the board. If the argument is 'white', it returns the board oriented for the white player. If 'black', it returns the board from the black player’s viewpoint. Passing 'audience' returns the complete board without hiding any information.
@@ -92,8 +92,6 @@ True
  ['*', '*', ' ', '*', '*', '*', '*', '*']
 ]
 ```
-
-Questions to consider during the planning stage include: How will you update the board for the white and black player’s perspectives after a move? How will you find all the positions that a player’s pieces can move to, which would be the visible positions? Where is the best place to implement this step in your code to reduce redundant work?
 
 
 
