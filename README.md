@@ -1,49 +1,64 @@
 # Fog of War Chess
 
-I created a class called **ChessVar** to implement an abstract board game based on a chess variant known as Fog of War chess. The following rule explanation assumes you have some knowledge of standard chess rules, particularly regarding how the pieces move and capture. If you're unsure about any of these rules, feel free to reach out with questions.
+This project implements a chess variant called **Fog of War Chess** (also known as [Dark Chess](https://en.wikipedia.org/wiki/Dark_chess)), where each player can only see their own pieces and the squares their pieces can legally move to (including any opponent pieces that can be captured). The game is implemented in Python in the [`ChessVar`](ChessVar.py) class.
 
-The game starts with the standard chess setup. You'll need to track which player's turn it is, with **white always moving first**. Pieces move and capture the same way as in standard chess, but there are **no checks, checkmates, castling, en passant, or pawn promotion**. Like in standard chess, pawns can move two spaces forward on their first move, but only one space on subsequent moves. The game ends when a player's king is captured, and that player loses.
+## Rules
 
-Locations on the board will be specified using "algebraic notation", with columns labeled a-h and rows labeled 1-8, as shown in this diagram: ![board](board.png "board")
+- The game starts with the standard chess setup.
+- **White always moves first.**
+- Pieces move and capture as in standard chess.
+- **No checks, checkmates, castling, en passant, or pawn promotion.**
+- Pawns can move two spaces forward on their first move, one space on subsequent moves.
+- The game ends when a player's king is captured.
+- Players are not informed if their king is in check; moving into or remaining in check is allowed.
+- Each player sees only their own pieces and the squares their pieces can legally move to. Opponent pieces are only visible if they can be captured; all other opponent pieces are hidden as `*`.
 
-Special rules for this variant of chess:
-Each player sees a different version of the board, where they can only view their **own pieces** and the **squares their pieces can legally move to**. If an opponent’s piece occupies one of these squares, it will be visible, as it can be captured. Hidden squares are clearly indicated to avoid confusion with visible empty squares. The objective is not to checkmate the king but to **capture** it. Players are not informed if their king is in check, and both staying in check or moving into check are legal moves, though they may result in the king being captured and losing the game.
-[(https://en.wikipedia.org/wiki/Dark_chess)](https://en.wikipedia.org/wiki/Dark_chess)
+## Board Representation
 
-My ChessVar class includes the following:
-* An **init method** that initializes any data members
-* A method called **get_game_state** that just returns 'UNFINISHED', 'WHITE_WON', 'BLACK_WON'. 
-* A method called **get_board** that takes one parameter – a string indicating the perspective from which to display the board and return the board. If the argument is 'white', it returns the board oriented for the white player. If 'black', it returns the board from the black player’s viewpoint. Passing 'audience' returns the complete board without hiding any information.
-* A method called **make_move** that takes two parameters - strings that represent the square moved from and the square moved to.  For example, make_move('b2', 'b4').  If the square being moved from does not contain a piece belonging to the player whose turn it is, or if the indicated move is not legal, or if the game has already been won, then it should **just return False**.  Otherwise it should make the indicated move, remove any captured piece, update the game state if necessary, update whose turn it is, and return True.
+- The board is an 8x8 nested list.
+- Lowercase letters (`r`, `n`, `b`, `q`, `k`, `p`) represent black pieces.
+- Uppercase letters (`R`, `N`, `B`, `Q`, `K`, `P`) represent white pieces.
+- Empty squares are `' '`.
+- Hidden squares (from a player's perspective) are shown as `'*'`.
 
-For auto-testing purposes, the initial board will be represented as a nested list structured like this: 
+### Example: Initial Board (Audience View)
+
 ```
-[ ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'], 
-  ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'], 
+[ ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+  ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'] ]
 ```
 
-In this setup, lowercase letters represent black pieces, uppercase letters represent white pieces, and empty spaces are shown as ' '. If you align the sub-lists, it will represent the board with pieces at their positions right away. In a player-specific view, pieces that are not visible are represented by '*', so the initial board setup from the white player’s perspective would look like this: 
+### Example: Initial Board (White's Perspective)
+
 ```
-[ ['*', '*', '*', '*', '*', '*', '*', '*'], 
-  ['*', '*', '*', '*', '*', '*', '*', '*'], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
-  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'], 
+[ ['*', '*', '*', '*', '*', '*', '*', '*'],
+  ['*', '*', '*', '*', '*', '*', '*', '*'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'] ]
 ```
 
-Feel free to add whatever other classes, methods, or data members you want.  All data members of a class must be private.  Every class should have an init method that initializes all of the data members for that class.
+## Usage
 
-Here's a very simple example of how the class could be used:
-```
+1. Import or instantiate the [`ChessVar`](ChessVar.py) class.
+2. Use `make_move(from_square, to_square)` to make moves (e.g., `'e2'`, `'e4'`).
+3. Use `get_board(perspective)` to get the board from `'white'`, `'black'`, or `'audience'` perspective.
+4. Use `get_game_state()` to check if the game is `'UNFINISHED'`, `'WHITE_WON'`, or `'BLACK_WON'`.
+
+### Example
+
+```python
+from ChessVar import ChessVar
+
 game = ChessVar()
 print(game.make_move('d2', 'd4'))
 print(game.make_move('g7', 'g5'))
@@ -54,7 +69,9 @@ print(game.get_board("audience"))
 print(game.get_board("white"))
 print(game.get_board("black"))
 ```
-The output would be:
+
+#### Output
+
 ```
 True
 True
@@ -62,36 +79,44 @@ True
 True
 True
 [
- ['r', 'n', 'b', 'B', 'k', 'b', 'n', 'r'], 
- ['p', 'p', 'p', 'p', ' ', 'p', ' ', 'p'], 
- [' ', ' ', ' ', ' ', 'p', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', 'P', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- ['P', 'P', 'P', ' ', 'P', 'P', 'P', 'P'], 
+ ['r', 'n', 'b', 'B', 'k', 'b', 'n', 'r'],
+ ['p', 'p', 'p', 'p', ' ', 'p', ' ', 'p'],
+ [' ', ' ', ' ', ' ', 'p', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', 'P', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ ['P', 'P', 'P', ' ', 'P', 'P', 'P', 'P'],
  ['R', 'N', ' ', 'Q', 'K', 'B', 'N', 'R']
 ]
 [
- ['*', '*', '*', 'B', '*', '*', '*', '*'], 
- ['*', '*', 'p', '*', ' ', '*', ' ', '*'], 
- [' ', ' ', ' ', ' ', '*', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', 'P', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- ['P', 'P', 'P', ' ', 'P', 'P', 'P', 'P'], 
+ ['*', '*', '*', 'B', '*', '*', '*', '*'],
+ ['*', '*', 'p', '*', ' ', '*', ' ', '*'],
+ [' ', ' ', ' ', ' ', '*', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', 'P', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ ['P', 'P', 'P', ' ', 'P', 'P', 'P', 'P'],
  ['R', 'N', ' ', 'Q', 'K', 'B', 'N', 'R']
 ]
 [
- ['r', 'n', 'b', 'B', 'k', 'b', 'n', 'r'], 
- ['p', 'p', 'p', 'p', ' ', 'p', ' ', 'p'], 
- [' ', ' ', ' ', ' ', 'p', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', '*', ' ', ' ', ' ', ' '], 
- [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
- ['*', '*', '*', ' ', '*', '*', '*', '*'], 
+ ['r', 'n', 'b', 'B', 'k', 'b', 'n', 'r'],
+ ['p', 'p', 'p', 'p', ' ', 'p', ' ', 'p'],
+ [' ', ' ', ' ', ' ', 'p', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', '*', ' ', ' ', ' ', ' '],
+ [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+ ['*', '*', '*', ' ', '*', '*', '*', '*'],
  ['*', '*', ' ', '*', '*', '*', '*', '*']
 ]
 ```
+
+## License
+
+MIT License
+
+---
+
+For more details, see [`ChessVar.py`](ChessVar.py).
 
 
 
